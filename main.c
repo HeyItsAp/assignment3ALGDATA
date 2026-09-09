@@ -31,8 +31,63 @@ void assertSorted(int list[], int length){
 	}
 
 	printf("List is sorted\n");
-	
 }
+
+// Hjelpe funksjon; Bytt.
+void bytt(int* a, int* b){
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
+
+/* 
+***********************
+QuickSort (fra boka)
+	t: tabell
+	h: høyre
+	v: venste
+	m: midten
+************************
+*/
+// Hjelpe funksjon; Median. Assisterende sort?
+int median3sort(int *t, int v, int h) {
+	int m = (v + h) / 2;
+	if (t[v] > t[m]) bytt(&t[v], &t[m]);
+	if (t[m] > t[h]) {
+		bytt(&t[m], &t[h]);
+		if (t[v] > t[m]) bytt(&t[v], &t[m]);
+	}
+	return m;
+}
+
+// Hjelpe funksjon; Splitt. BAsert på boken finner en delingsverdi
+int splitt(int *t, int v, int h){
+	int iv, ih;
+	int m = median3sort(t,v,h);
+	int dv = t[m];
+	bytt(&t[m], &t[h-1]);
+
+	for (iv = v, ih = h - 1;;) {
+		while (t[++iv] < dv);
+		while (t[--ih]>dv);
+		if (iv >= ih) break;
+		bytt(&t[iv], &t[ih]);
+	}
+	bytt(&t[iv], &t[h - 1]);
+	return iv;
+}
+
+
+
+// Selve quick sort:
+void quicksort(int *t, int v, int h) { 
+	if (h - v > 2){
+		int delepos = splitt(t,v,h);
+		quicksort(t, v, delepos - 1);
+		quicksort(t, delepos + 1, h);
+	} else median3sort(t, v, h);
+}
+
 int main(){
 	int testlist[] = {1,2,3,4};
 	int testlist2[] = {1,2,4,3};
