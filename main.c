@@ -42,7 +42,7 @@ void bytt(int* a, int* b){
 
 /* 
 ***********************
-QuickSort (fra boka)
+QuickSort fra boka
 	t: tabell
 	h: høyre
 	v: venste
@@ -88,9 +88,76 @@ void quicksort(int *t, int v, int h) {
 	} else median3sort(t, v, h);
 }
 
+/*
+* **********************
+Quicksort fra geekforgeeks
+* **********************
+*/
+// C program to implement dual pivot QuickSort
+#include <stdio.h>
+
+int partition(int* arr, int low, int high, int* lp);
+
+void DualPivotQuickSort(int* arr, int low, int high)
+{
+    if (low < high) {
+        // lp means left pivot, and rp means right pivot.
+        int lp, rp;
+        rp = partition(arr, low, high, &lp);
+        DualPivotQuickSort(arr, low, lp - 1);
+        DualPivotQuickSort(arr, lp + 1, rp - 1);
+        DualPivotQuickSort(arr, rp + 1, high);
+    }
+}
+
+int partition(int* arr, int low, int high, int* lp)
+{
+    if (arr[low] > arr[high])
+        bytt(&arr[low], &arr[high]);
+    // p is the left pivot, and q is the right pivot.
+    int j = low + 1;
+    int g = high - 1, k = low + 1, p = arr[low], q = arr[high];
+    while (k <= g) {
+
+        // if elements are less than the left pivot
+        if (arr[k] < p) {
+            bytt(&arr[k], &arr[j]);
+            j++;
+        }
+
+        // if elements are greater than or equal
+        // to the right pivot
+        else if (arr[k] >= q) {
+            while (arr[g] > q && k < g)
+                g--;
+            bytt(&arr[k], &arr[g]);
+            g--;
+            if (arr[k] < p) {
+                bytt(&arr[k], &arr[j]);
+                j++;
+            }
+        }
+        k++;
+    }
+    j--;
+    g++;
+
+    // bring pivots to their appropriate positions.
+    bytt(&arr[low], &arr[j]);
+    bytt(&arr[high], &arr[g]);
+
+    // returning the indices of the pivots.
+    *lp = j; // because we cannot return two elements
+    // from a function.
+
+    return g;
+}
+
+// Driver code
 int main(){
 	int testlist[] = {1,2,3,4};
 	int testlist2[] = {1,2,4,3};
 	assertSum(testlist, testlist2, ARRAY_LEN(testlist), ARRAY_LEN(testlist2));
 	assertSorted(testlist, ARRAY_LEN(testlist));
+	return 0;
 }
