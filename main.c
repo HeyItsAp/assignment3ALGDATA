@@ -203,14 +203,34 @@ int partition(int* arr, int low, int high, int* lp)
 
     return g;
 }
+int comp(const void *a, const void *b){
+	int x = *(const int *)a;
+	int b = *(const int *)b;
 
+	if (x < y)
+		return -1;
+	if (x > y)
+		return 1;
+	return 0;
+
+}
+int reverse(const void *a, const void *b){
+	return *b - *a;
+}
 // ********************
 // Main 
 // ********************
 int main(){
 	srand(time(NULL));
 	int count = 10;
-	int* unsorted = createPatternArray(count, 1, 100);
+	int* unsorted1 = createRandomArray(count, 1, 100);
+	int* unsorted2 = createPatternArray(count, 1, 100);
+	int* unsorted3 = malloc(count * sizeof(int));
+	unsorted3 = qsort(&unsorted1, count, &unsorted1[0], comp);
+	int* unsorted4 = malloc(count * sizeof(int));
+	unsorted4 = qsort(&unsorted3, count, &unsorted3[0], reverse);
+
+
 	printf("Generating:\n");
 	for (int i = 0; i < count; i++){
 		printf("%d\n", unsorted[i]);
@@ -220,4 +240,7 @@ int main(){
 	assertSorted(unsorted, count);
 	free(unsorted);
 	return 0;
+
+
+	
 }
