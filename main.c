@@ -228,32 +228,32 @@ int main(){
 	int* unsorted1 = createRandomArray(count, 1, 100);
 	int* unsorted2 = createPatternArray(count, 1, 100);
 	int* unsorted3 = createRandomArray(count, 1, 100);
-	qsort(unsorted1, count, sizeof(int), comp);
+	qsort(unsorted3, count, sizeof(int), comp);
 	int* unsorted4 = createRandomArray(count, 1, 100);
 	qsort(unsorted4, count, sizeof(int), comp);
 	qsort(unsorted4, count, sizeof(int), reverse);
 
-	printf("Generating 1:\n");
+	printf("\nGenerating 1:\n");
 	for (int i = 0; i < count; i++){
-		printf("%d\n", unsorted1[i]);
+		printf("%d ", unsorted1[i]);
 	}
 	printf("\n");
 	
-	printf("Generating 1:\n");
+	printf("\nGenerating 2:\n");
 	for (int i = 0; i < count; i++){
-		printf("%d\n", unsorted1[i]);
+		printf("%d ", unsorted2[i]);
 	}
 	printf("\n");
 	
-	printf("Generating 1:\n");
+	printf("\nGenerating 3:\n");
 	for (int i = 0; i < count; i++){
-		printf("%d\n", unsorted1[i]);
+		printf("%d ", unsorted3[i]);
 	}
 	printf("\n");
 	
-	printf("Generating 1:\n");
+	printf("\nGenerating 4:\n");
 	for (int i = 0; i < count; i++){
-		printf("%d\n", unsorted1[i]);
+		printf("%d ", unsorted4[i]);
 	}
 	printf("\n");
 
