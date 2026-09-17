@@ -93,9 +93,6 @@ void quicksort(int *t, int v, int h) {
 Quicksort fra geekforgeeks
 * **********************
 */
-// C program to implement dual pivot QuickSort
-#include <stdio.h>
-
 int partition(int* arr, int low, int high, int* lp);
 
 void DualPivotQuickSort(int* arr, int low, int high)
@@ -105,7 +102,9 @@ void DualPivotQuickSort(int* arr, int low, int high)
         int lp, rp;
         rp = partition(arr, low, high, &lp);
         DualPivotQuickSort(arr, low, lp - 1);
-        DualPivotQuickSort(arr, lp + 1, rp - 1);
+        if (arr[lp] != arr[rp]){
+	        DualPivotQuickSort(arr, lp + 1, rp - 1); // If pivots are equal just skip it    	
+        }
         DualPivotQuickSort(arr, rp + 1, high);
     }
 }
@@ -115,8 +114,9 @@ int partition(int* arr, int low, int high, int* lp)
     if (arr[low] > arr[high])
         bytt(&arr[low], &arr[high]);
     // p is the left pivot, and q is the right pivot.
+    
     int j = low + 1;
-    int g = high - 1, k = low + 1, p = arr[low], q = arr[high];
+    int g = high - 1, k = low + 1, p = arr[low+(high-low)/3], q = arr[high+(high-low)/3]; // Better pivot candiate fix
     while (k <= g) {
 
         // if elements are less than the left pivot
