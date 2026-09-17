@@ -30,7 +30,10 @@ void assertSorted(int list[], int length){
 	}
 
 	for (int i=1; i<length;i++){
-		assert(list[i]>= list[i-1]);
+		if (list[i] < list[i-1]){
+			fprintf(stderr, "Assertion failed: list[%d] (%d) < list[%d] (%d)\n", i, list[i], i - 1, list[i - 1]);
+			return;
+		}
 	}
 
 	printf("List is sorted\n");
@@ -64,6 +67,28 @@ int* createRandomArray(int count, int min, int max){
 	}
 	free(used);
 	return unsortedlist;
+}
+// Funksjon som returner en array der hverannen er 1:
+int* createPatternArray(int count, int min, int max) {
+    if (count <= 0 || min > max) return NULL;
+
+    int* unsorted = malloc(count * sizeof(int));
+    if (!unsorted) return NULL;
+
+    int range = max - min + 1;
+    int duplicateValue = min; // Verdien som gjentas ofte
+
+    for (int i = 0; i < count; i++) {
+        if (i % 2 == 0) {
+            // Annenhvert element får samme faste verdi
+            unsorted[i] = duplicateValue;
+        } else {
+            // De andre elementene blir tilfeldige
+            unsorted[i] = min + (rand() % range);
+        }
+    }
+
+    return unsorted;
 }
 
 /* 
@@ -179,18 +204,20 @@ int partition(int* arr, int low, int high, int* lp)
     return g;
 }
 
-// Driver code
+// ********************
+// Main 
+// ********************
 int main(){
 	srand(time(NULL));
 	int count = 10;
-	int* unsorted = createRandomArray(count, 1, 100);
+	int* unsorted = createPatternArray(count, 1, 100);
 	printf("Generating:\n");
 	for (int i = 0; i < count; i++){
 		printf("%d\n", unsorted[i]);
 	}
 	printf("\n");
-	assertSum(unsorted, unsorted, ARRAY_LEN(unsorted), ARRAY_LEN(unsorted));
-	assertSorted(unsorted, ARRAY_LEN(unsorted));
+	assertSum(unsorted, unsorted, count, count);
+	assertSorted(unsorted, count);
 	free(unsorted);
 	return 0;
 }
