@@ -1,5 +1,8 @@
 # include <stdio.h>
 # include <assert.h>
+# include <stdlib.h>
+# include <time.h>
+
 
 #define ARRAY_LEN(arr)(sizeof(arr)/sizeof((arr)[0]))
 
@@ -38,6 +41,29 @@ void bytt(int* a, int* b){
 	int t = *a;
 	*a = *b;
 	*b = t;
+}
+// Funksjon som returnerer tilfeldig array:
+int* createRandomArray(int count, int min, int max){
+	int range = max - min + 1;
+	if (count > range) return NULL;
+
+	int* unsortedlist = malloc(count * sizeof(int));
+	int* used = calloc(range,sizeof(int));
+	if(!used){
+		free(unsortedlist);
+		return NULL;
+	}
+
+	for (int i = 0; i < count; i++){
+		int num;
+		do {
+			num = rand()% range;
+		} while (used[num]);
+		unsortedlist[i] = min + num;
+		used[num] = 1;
+	}
+	free(used);
+	return unsortedlist;
 }
 
 /* 
@@ -155,9 +181,16 @@ int partition(int* arr, int low, int high, int* lp)
 
 // Driver code
 int main(){
-	int testlist[] = {1,2,3,4};
-	int testlist2[] = {1,2,4,3};
-	assertSum(testlist, testlist2, ARRAY_LEN(testlist), ARRAY_LEN(testlist2));
-	assertSorted(testlist, ARRAY_LEN(testlist));
+	srand(time(NULL));
+	int count = 10;
+	int* unsorted = createRandomArray(count, 1, 100);
+	printf("Generating:\n");
+	for (int i = 0; i < count; i++){
+		printf("%d\n", unsorted[i]);
+	}
+	printf("\n");
+	assertSum(unsorted, unsorted, ARRAY_LEN(unsorted), ARRAY_LEN(unsorted));
+	assertSorted(unsorted, ARRAY_LEN(unsorted));
+	free(unsorted);
 	return 0;
 }
