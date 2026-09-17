@@ -167,7 +167,7 @@ int partition(int* arr, int low, int high, int* lp)
     // p is the left pivot, and q is the right pivot.
     
     int j = low + 1;
-    int g = high - 1, k = low + 1, p = arr[low+(high-low)/3], q = arr[high+(high-low)/3]; // Better pivot candiate fix
+    int g = high - 1, k = low + 1, p = arr[low+(high-low)/3], q = arr[high-(high-low)/3]; // Better pivot candiate fix
     while (k <= g) {
 
         // if elements are less than the left pivot
@@ -203,9 +203,10 @@ int partition(int* arr, int low, int high, int* lp)
 
     return g;
 }
+// qsort compare function
 int comp(const void *a, const void *b){
 	int x = *(const int *)a;
-	int b = *(const int *)b;
+	int y = *(const int *)b;
 
 	if (x < y)
 		return -1;
@@ -214,8 +215,9 @@ int comp(const void *a, const void *b){
 	return 0;
 
 }
+// qsort reverse
 int reverse(const void *a, const void *b){
-	return *b - *a;
+	return *(const int*)b - *(const int*)a;
 }
 // ********************
 // Main 
@@ -225,20 +227,41 @@ int main(){
 	int count = 10;
 	int* unsorted1 = createRandomArray(count, 1, 100);
 	int* unsorted2 = createPatternArray(count, 1, 100);
-	int* unsorted3 = malloc(count * sizeof(int));
-	unsorted3 = qsort(&unsorted1, count, &unsorted1[0], comp);
-	int* unsorted4 = malloc(count * sizeof(int));
-	unsorted4 = qsort(&unsorted3, count, &unsorted3[0], reverse);
+	int* unsorted3 = createRandomArray(count, 1, 100);
+	qsort(unsorted1, count, sizeof(int), comp);
+	int* unsorted4 = createRandomArray(count, 1, 100);
+	qsort(unsorted4, count, sizeof(int), comp);
+	qsort(unsorted4, count, sizeof(int), reverse);
 
-
-	printf("Generating:\n");
+	printf("Generating 1:\n");
 	for (int i = 0; i < count; i++){
-		printf("%d\n", unsorted[i]);
+		printf("%d\n", unsorted1[i]);
 	}
 	printf("\n");
-	assertSum(unsorted, unsorted, count, count);
-	assertSorted(unsorted, count);
-	free(unsorted);
+	
+	printf("Generating 1:\n");
+	for (int i = 0; i < count; i++){
+		printf("%d\n", unsorted1[i]);
+	}
+	printf("\n");
+	
+	printf("Generating 1:\n");
+	for (int i = 0; i < count; i++){
+		printf("%d\n", unsorted1[i]);
+	}
+	printf("\n");
+	
+	printf("Generating 1:\n");
+	for (int i = 0; i < count; i++){
+		printf("%d\n", unsorted1[i]);
+	}
+	printf("\n");
+
+	free(unsorted1);
+	free(unsorted2);
+	free(unsorted3);
+	free(unsorted4);
+
 	return 0;
 
 
