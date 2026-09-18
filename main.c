@@ -2,6 +2,7 @@
 # include <assert.h>
 # include <stdlib.h>
 # include <time.h>
+# include <string.h>
 
 
 #define ARRAY_LEN(arr)(sizeof(arr)/sizeof((arr)[0]))
@@ -14,13 +15,6 @@ int sum(int list[], int length){
 	return sum;
 }
 
-// Summen av lista burde være lik summen av samme sortert liste
-void assertSum(int list1[], int list2[], int length1, int length2){
-	int sumList1 = sum(list1, length1);
-	int sumList2 = sum(list2, length2);
-	assert(sumList1 == sumList2);
-	printf("Both lists have same sums\n");
-}
 
 // A sortert liste er en stigende list. F.eks. {2, 6, 9, 11, 21, 67}
 void assertSorted(int list[], int length){
@@ -194,8 +188,8 @@ int partition(int* arr, int low, int high, int* lp)
     g++;
 
     // bring pivots to their appropriate positions.
-    bytt(&arr[low], &arr[j]);
-    bytt(&arr[high], &arr[g]);
+    bytt(&arr[low+(high-low)/3], &arr[j]);
+    bytt(&arr[high-(high-low)/3], &arr[g]);
 
     // returning the indices of the pivots.
     *lp = j; // because we cannot return two elements
@@ -224,15 +218,17 @@ int reverse(const void *a, const void *b){
 // ********************
 int main(){
 	srand(time(NULL));
-	int count = 10;
-	int* unsorted1 = createRandomArray(count, 1, 100);
-	int* unsorted2 = createPatternArray(count, 1, 100);
-	int* unsorted3 = createRandomArray(count, 1, 100);
+	int count = 500000;
+	int trials = 5;
+	int* unsorted1 = createRandomArray(count, 1, count);
+	int* unsorted2 = createPatternArray(count, 1, count);
+	int* unsorted3 = createRandomArray(count, 1, count);
 	qsort(unsorted3, count, sizeof(int), comp);
-	int* unsorted4 = createRandomArray(count, 1, 100);
+	int* unsorted4 = createRandomArray(count, 1, count);
 	qsort(unsorted4, count, sizeof(int), comp);
 	qsort(unsorted4, count, sizeof(int), reverse);
 
+	/*
 	printf("\nGenerating 1:\n");
 	for (int i = 0; i < count; i++){
 		printf("%d ", unsorted1[i]);
@@ -256,14 +252,184 @@ int main(){
 		printf("%d ", unsorted4[i]);
 	}
 	printf("\n");
+	*/
 
+	// RandomArray
+	printf("=== Round 1: Random List ===\n");
+	int* backup = malloc(count * sizeof(int));
+	memcpy(backup, unsorted1, count * sizeof(int));
+	assertSorted(unsorted1, count);
+
+	printf("--- Quicksort ---\n");
+	printf("- Pre-sorted stats -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+
+	double total_time = 0;
+	for (int i = 0; i < trials; i++){
+	    memcpy(unsorted1, backup, count * sizeof(int)); // Reset
+		clock_t start = clock();
+		quicksort(unsorted1, 0, count - 1);
+		clock_t end = clock();
+		total_time += (double)(end-start)/CLOCKS_PER_SEC;
+
+	}
+	double avg_time =  total_time/ trials;
+	printf("- Completed -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+	assertSorted(unsorted1, count);
+	printf("Tid: %.12f\n", avg_time);
+
+	printf("--- Dual Pivot ---\n");
+	printf("- Pre-sorted stats -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+
+	total_time = 0;
+	for (int i = 0; i < trials; i++){
+	    memcpy(unsorted1, backup, count * sizeof(int)); // Reset
+		clock_t start = clock();
+		DualPivotQuickSort(unsorted1, 0, count - 1);
+		clock_t end = clock();
+		total_time += (double)(end-start)/CLOCKS_PER_SEC;
+
+	}
+	avg_time =  total_time/ trials;
+	printf("- Completed -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+	assertSorted(unsorted1, count);
+	printf("Tid: %.12f\n", avg_time);
+	
+	free(backup);
+	free(unsorted1);
+
+	// Duplicate
+	printf("=== Round 2: Duplicate ===\n");
+	memcpy(backup, unsorted2, count * sizeof(int));
+	assertSorted(unsorted2, count);
+	printf("--- Quicksort ---\n");
+	printf("- Pre-sorted stats -\n");
+	printf("Sum: %d,\n", sum(unsorted2, count));
+
+	total_time = 0;
+	for (int i = 0; i < trials; i++){
+	    memcpy(unsorted2, backup, count * sizeof(int)); // Reset
+		clock_t start = clock();
+		quicksort(unsorted2, 0, count - 1);
+		clock_t end = clock();
+		total_time += (double)(end-start)/CLOCKS_PER_SEC;
+
+	}
+	avg_time =  total_time/ trials;
+	printf("- Completed -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+	assertSorted(unsorted2, count);
+	printf("Tid: %.12f\n", avg_time);
+
+	printf("--- Dual Pivot ---\n");
+	printf("- Pre-sorted stats -\n");
+	printf("Sum: %d,\n", sum(unsorted1, count));
+
+	total_time = 0;
+	for (int i = 0; i < trials; i++){
+	    memcpy(unsorted2, backup, count * sizeof(int)); // Reset
+		clock_t start = clock();
+		DualPivotQuickSort(unsorted1, 0, count - 1);
+		clock_t end = clock();
+		total_time += (double)(end-start)/CLOCKS_PER_SEC;
+
+	}
+	avg_time =  total_time/ trials;
+	printf("- Completed -\n");
+	printf("Sum: %d,\n", sum(unsorted2, count));
+	assertSorted(unsorted2, count);
+	printf("Tid: %.12f\n", avg_time);
+
+	// Already sorted
+		printf("=== Round 3: Already Sorted  ===\n");
+		memcpy(backup, unsorted3, count * sizeof(int));
+		assertSorted(unsorted3, count);
+		printf("--- Quicksort ---\n");
+		printf("- Pre-sorted stats -\n");
+		printf("Sum: %d,\n", sum(unsorted3, count));
+	
+		total_time = 0;
+		for (int i = 0; i < trials; i++){
+		    memcpy(unsorted3, backup, count * sizeof(int)); // Reset
+			clock_t start = clock();
+			quicksort(unsorted3, 0, count - 1);
+			clock_t end = clock();
+			total_time += (double)(end-start)/CLOCKS_PER_SEC;
+	
+		}
+		avg_time =  total_time/ trials;
+		printf("- Completed -\n");
+		printf("Sum: %d,\n", sum(unsorted3, count));
+		assertSorted(unsorted3, count);
+		printf("Tid: %.12f\n", avg_time);
+	
+		printf("--- Dual Pivot ---\n");
+		printf("- Pre-sorted stats -\n");
+		printf("Sum: %d,\n", sum(unsorted3, count));
+	
+		total_time = 0;
+		for (int i = 0; i < trials; i++){
+		    memcpy(unsorted3, backup, count * sizeof(int)); // Reset
+			clock_t start = clock();
+			DualPivotQuickSort(unsorted3, 0, count - 1);
+			clock_t end = clock();
+			total_time += (double)(end-start)/CLOCKS_PER_SEC;
+	
+		}
+		avg_time =  total_time/ trials;
+		printf("- Completed -\n");
+		printf("Sum: %d,\n", sum(unsorted3, count));
+		assertSorted(unsorted3, count);
+		printf("Tid: %.12f\n", avg_time);
+
+		// Duplicate
+			printf("=== Round 4: Reverse Sorted (already sorted but reverse order) ===\n");
+			memcpy(backup, unsorted4, count * sizeof(int));
+			assertSorted(unsorted4, count);
+			printf("--- Quicksort ---\n");
+			printf("- Pre-sorted stats -\n");
+			printf("Sum: %d,\n", sum(unsorted4, count));
+		
+			total_time = 0;
+			for (int i = 0; i < trials; i++){
+			    memcpy(unsorted4, backup, count * sizeof(int)); // Reset
+				clock_t start = clock();
+				quicksort(unsorted4, 0, count - 1);
+				clock_t end = clock();
+				total_time += (double)(end-start)/CLOCKS_PER_SEC;
+		
+			}
+			avg_time =  total_time/ trials;
+			printf("- Completed -\n");
+			printf("Sum: %d,\n", sum(unsorted4, count));
+			assertSorted(unsorted4, count);
+			printf("Tid: %.12f\n", avg_time);
+		
+			printf("--- Dual Pivot ---\n");
+			printf("- Pre-sorted stats -\n");
+			printf("Sum: %d,\n", sum(unsorted4, count));
+		
+			total_time = 0;
+			for (int i = 0; i < trials; i++){
+			    memcpy(unsorted4, backup, count * sizeof(int)); // Reset
+				clock_t start = clock();
+				DualPivotQuickSort(unsorted4, 0, count - 1);
+				clock_t end = clock();
+				total_time += (double)(end-start)/CLOCKS_PER_SEC;
+		
+			}
+			avg_time =  total_time/ trials;
+			printf("- Completed -\n");
+			printf("Sum: %d,\n", sum(unsorted4, count));
+			assertSorted(unsorted4, count);
+			printf("Tid: %.12f\n", avg_time);
+	free(backup);
 	free(unsorted1);
 	free(unsorted2);
 	free(unsorted3);
 	free(unsorted4);
-
-	return 0;
-
-
-	
+	return 0;	
 }
