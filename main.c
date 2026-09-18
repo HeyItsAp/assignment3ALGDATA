@@ -186,12 +186,19 @@ void DualPivotQuickSort(int *arr, int low, int high)
 
 int partition(int *arr, int low, int high, int *lp)
 {
+	// New Pivot point to avoid worst case on identical
+	int mid1 = low + (high - low) / 3;
+	int mid2 = high - (high  low) / 3;
+
+	if (arr[mid1] > arr[mid2]) bytt(&arr[mid1], &arr[mid2]);
+	    bytt(&arr[low], &arr[mid1]);   // move left pivot candidate into place
+	    bytt(&arr[high], &arr[mid2]);  // move right pivot candidate into place
+	    
 	if (arr[low] > arr[high])
 		bytt(&arr[low], &arr[high]);
 	// p is the left pivot, and q is the right pivot.
-
 	int j = low + 1;
-	int g = high - 1, k = low + 1, p = arr[low + (high - low) / 3], q = arr[high - (high - low) / 3]; // Better pivot candiate fix
+	int g = high - 1, k = low + 1, p = arr[low], q = arr[high]; // Better pivot candiate fix
 	while (k <= g)
 	{
 
@@ -254,7 +261,7 @@ int reverse(const void *a, const void *b)
 int main()
 {
 	srand(time(NULL));
-	int count = 100000;
+	int count = 500000;
 	int trials = 5;
 	int *unsorted1 = createRandomArray(count, 1, count);
 	int *unsorted2 = createPatternArray(count, 1, count);
@@ -296,7 +303,7 @@ int main()
 	memcpy(backup, unsorted1, count * sizeof(int));
 	assertSorted(unsorted1, count);
 
-	printf("--- Quicksort ---\n");
+	printf("----- Quicksort -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted1, count));
 
@@ -313,9 +320,9 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted1, count));
 	assertSorted(unsorted1, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 
-	printf("--- Dual Pivot ---\n");
+	printf("----- Dual Pivot -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted1, count));
 
@@ -332,14 +339,15 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted1, count));
 	assertSorted(unsorted1, count);
-	printf("Tid: %.12f\n", avg_time);
-
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 	free(unsorted1);
+	printf("\n");
+
 	// Duplicate
 	printf("=== Round 2: Duplicate ===\n");
 	memcpy(backup, unsorted2, count * sizeof(int));
 	assertSorted(unsorted2, count);
-	printf("--- Quicksort ---\n");
+	printf("----- Quicksort -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted2, count));
 
@@ -356,9 +364,9 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted2, count));
 	assertSorted(unsorted2, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 
-	printf("--- Dual Pivot ---\n");
+	printf("----- Dual Pivot -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted2, count));
 
@@ -375,14 +383,16 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted2, count));
 	assertSorted(unsorted2, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 	free(unsorted2);
+	printf("\n");
+
 
 	// Already sorted
 	printf("=== Round 3: Already Sorted  ===\n");
 	memcpy(backup, unsorted3, count * sizeof(int));
 	assertSorted(unsorted3, count);
-	printf("--- Quicksort ---\n");
+	printf("----- Quicksort -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted3, count));
 
@@ -399,9 +409,9 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted3, count));
 	assertSorted(unsorted3, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 
-	printf("--- Dual Pivot ---\n");
+	printf("----- Dual Pivot -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted3, count));
 
@@ -418,14 +428,15 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted3, count));
 	assertSorted(unsorted3, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 	free(unsorted3);
+	printf("\n");
 
 	// Reverse Sorted
 	printf("=== Round 4: Reverse Sorted (already sorted but reverse order) ===\n");
 	memcpy(backup, unsorted4, count * sizeof(int));
 	assertSorted(unsorted4, count);
-	printf("--- Quicksort ---\n");
+	printf("----- Quicksort -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted4, count));
 
@@ -442,9 +453,9 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted4, count));
 	assertSorted(unsorted4, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 
-	printf("--- Dual Pivot ---\n");
+	printf("----- Dual Pivot -----\n");
 	printf("- Pre-sorted stats -\n");
 	printf("Sum: %d,\n", sum(unsorted4, count));
 
@@ -461,7 +472,7 @@ int main()
 	printf("- Completed -\n");
 	printf("Sum: %d,\n", sum(unsorted4, count));
 	assertSorted(unsorted4, count);
-	printf("Tid: %.12f\n", avg_time);
+	printf("[[ Tid: %.12f ]]\n", avg_time);
 	free(unsorted4);
 	free(backup);
 
