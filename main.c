@@ -188,11 +188,11 @@ int partition(int *arr, int low, int high, int *lp)
 {
 	// New Pivot point to avoid worst case on identical
 	int mid1 = low + (high - low) / 3;
-	int mid2 = high - (high  low) / 3;
+	int mid2 = high - (high - low) / 3;
 
 	if (arr[mid1] > arr[mid2]) bytt(&arr[mid1], &arr[mid2]);
-	    bytt(&arr[low], &arr[mid1]);   // move left pivot candidate into place
-	    bytt(&arr[high], &arr[mid2]);  // move right pivot candidate into place
+	bytt(&arr[low], &arr[mid1]);   // move left pivot candidate into place
+	bytt(&arr[high], &arr[mid2]);  // move right pivot candidate into place
 	    
 	if (arr[low] > arr[high])
 		bytt(&arr[low], &arr[high]);
@@ -229,8 +229,8 @@ int partition(int *arr, int low, int high, int *lp)
 	g++;
 
 	// bring pivots to their appropriate positions.
-	bytt(&arr[low + (high - low) / 3], &arr[j]);
-	bytt(&arr[high - (high - low) / 3], &arr[g]);
+	bytt(&arr[low], &arr[j]);
+	bytt(&arr[high], &arr[g]);
 
 	// returning the indices of the pivots.
 	*lp = j; // because we cannot return two elements
