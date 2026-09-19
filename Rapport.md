@@ -394,6 +394,11 @@ Her kan du se en eksempel runde:
 | *Duplicates*       | 0.070165000000 | 0.046651000000       |
 | *Sorted*           | 0.016660800000 | 0.022758400000       |
 | *Sorted-Reverse*   | 0.027653800000 | 0.026135400000       |
+
+Som vi serer forskjellene større der hvor Dual Pivot QuickSort skulle være bedre i. Dual Pivot QuickSort skulle løse problemet med duplicate gjennom flere delings-punkter, som reflekters. Men dette gjorde det vanskeligere å sortere en alleredde sortert liste. Vi kan si at begge er quicksort-algortimer og derfor har omtrent like tider i Random list, og sorted reverse kategoriene.
+
+
+Her er raw terminal teksten når man kjører programmet.
 ```c
 === Round 1: Random List ===
 ----- Quicksort -----
